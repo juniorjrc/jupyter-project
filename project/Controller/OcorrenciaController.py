@@ -39,7 +39,7 @@ class OcorrenciaController():
             return grafico.plotPizzaGraph(
             todasNaturezasProdutividade,
             todosRegistrosProdutividade,
-            "Visão geral do cenário de registros de ocorrências filtradas por " + str(tipo.nomeTipo) + "."
+            "Visão geral do cenário de registros de ocorrências filtradas por <b>" + str(tipo.nomeTipo) + "</b>."
         )
         
         if tipo.idTipo == 2:
@@ -73,7 +73,7 @@ class OcorrenciaController():
 
         #PLOTA O GRÁFICO
         return grafico.plotComparativeGraph(
-            "Somatório de todos registros de ocorrências na cidade de Cruzeiro\nno período de 2017 à Fevereiro de 2019 para ambos os filtros",
+            "Somatório de todos registros de ocorrências na cidade de Cruzeiro<br>no período de 2017 à Fevereiro de 2019 para ambos os filtros",
                 "Anos",
                 todosAnos,
                 somatorioProdutividade,
@@ -113,8 +113,8 @@ class OcorrenciaController():
         
         #PLOTA O GRÁFICO
         return grafico.plotComparativeGraph(
-            "Gŕafico do número de ocorrências registradas na base da polícia no mês de " + str(mes.mes) + 
-            "\nno período de 2017 à Fevereiro de 2019 para ambos os filtros.",
+            "Gŕafico do número de ocorrências registradas na base da polícia no mês de <b>" + str(mes.mes) + 
+            "</b><br>no período de 2017 à Fevereiro de 2019 para ambos os filtros.",
                 "Anos",
                 todosAnos,
                 ocorrenciasMesProdutividade,
@@ -146,9 +146,9 @@ class OcorrenciaController():
         
         #PLOTA O GRÁFICO
         return grafico.plotNormalGraph(
-            "Gráfico do somatório dos registrs de " + str(natureza.nomeNatureza) + 
-            "\nfiltradas por " + str(tipo.nomeTipo) +
-                "\nno período de 2017 à Fevereiro de 2019",
+            "Gráfico do somatório dos registrs de <b>" + str(natureza.nomeNatureza) + 
+            "</b><br>filtradas por " + str(tipo.nomeTipo) +
+                "<br>no período de 2017 à Fevereiro de 2019",
                 "Anos",
                 "Registros",
                 todosAnos,
@@ -178,9 +178,9 @@ class OcorrenciaController():
 
         #PLOTA O GRÁFICO
         return grafico.plotNormalGraph(
-            "Número de registros de casos de " + str(natureza.nomeNatureza) +
-            "\nno ano de " + str(ano.ano) +
-                "\nna cidade de " + str(cidade.cidade),
+            "Número de registros de casos de <b>" + str(natureza.nomeNatureza) +
+            "</b><br>no ano de " + str(ano.ano) +
+                "<br>na cidade de " + str(cidade.cidade),
                 "Meses",
                 "Registros",
                 todosMeses,
@@ -212,6 +212,7 @@ class OcorrenciaController():
 
         print("Na cidade de " + str(cidade.cidade) + ", no mês de " + str(mes.mes) + " de " + str(ano.ano) + " obtiveram-se um total de " + str(ocorrencias[4]) + " registros de ocorrências de " + str(natureza.nomeNatureza) + " filtradas por " + str(tipo.nomeTipo) + ".")
 
+    #ESTE METODO MOSTRA OS DETALHES DE TODAS NATUREZAS EM MÊS E ANO ESPECIFICADO
     def consultaDetalheTodasOcorrenciasMesAno(self, id_cidade, id_mes, id_ano, id_tipo):
         cor = self.verificaCor(id_tipo)
         cidade = c.Cidade(id_cidade)
@@ -229,13 +230,64 @@ class OcorrenciaController():
             registros.append(int(detalhesOcorrencias[ocorrencia][4]))
         
         return grafico.plotHorizontalGraph(
-            "Registros de todas as ocorrências filtradas por " + str(tipo.nomeTipo) +
-            "\nno mês de " + str(mes.mes) + " de " + str(ano.ano),
+            "Registros de todas as ocorrências filtradas por <b>" + str(tipo.nomeTipo) +
+            "</b><br>no mês de " + str(mes.mes) + " de " + str(ano.ano),
                 "Registros",
                 "Naturezas",
                 registros,
                 ocorrencias,
                 cor
+        )
+
+    #ESTE MÉTODO RETORNA O COMPARATIVO DE TODAS AS NATUREZAS DURANTE MÊS ESPECIFICADO EM TODO O PERÍODO
+    def consultaRegistroFinal(self, id_cidade, id_mes, id_tipo):
+        if id_tipo == 1:
+            paletaCores = ['rgba(38, 96, 220, 0.7)', 'rgba(1, 43, 133, 0.7)', 'rgba(2, 22, 65, 0.7)']
+        if id_tipo == 2:
+            paletaCores = ['rgba(195, 55, 64, 0.7)', 'rgba(130, 3, 11, 0.7)', 'rgba(78, 1, 6, 0.7)']
+
+        cidade = c.Cidade(id_cidade)
+        mes = m.Mes(id_mes)
+        tipo = t.Tipo(id_tipo)
+
+        ocorrencias = []
+        registros2017 = []
+        registros2018 = []
+        registros2019 = []
+
+        #2017
+        detalhesOcorrencias = ocorrenciaDaoBean.getDetalheTodasOcorrenciasPorMes(cidade.idCidade, mes.idMes, 1, tipo.idTipo)
+        for ocorrencia in range(len(detalhesOcorrencias)):
+            ocorrencias.append(detalhesOcorrencias[ocorrencia][0])
+            registros2017.append(int(detalhesOcorrencias[ocorrencia][4]))
+        
+        #2018
+        detalhesOcorrencias = ocorrenciaDaoBean.getDetalheTodasOcorrenciasPorMes(cidade.idCidade, mes.idMes, 2, tipo.idTipo)
+        for ocorrencia in range(len(detalhesOcorrencias)):
+            registros2018.append(int(detalhesOcorrencias[ocorrencia][4]))
+        
+        #2019
+        detalhesOcorrencias = ocorrenciaDaoBean.getDetalheTodasOcorrenciasPorMes(cidade.idCidade, mes.idMes, 3, tipo.idTipo)
+        for ocorrencia in range(len(detalhesOcorrencias)):
+            registros2019.append(int(detalhesOcorrencias[ocorrencia][4]))
+        
+        return grafico.plotHorizontalComparativeGraph(
+            "Comparativo dos registros de todas as ocorrências registradas na cidade de " + str(cidade.cidade) + 
+            "<br>filtradas por " + str(tipo.nomeTipo) + " no mês de <b>" + str(mes.mes) + "</b>",
+                "Registros",
+                "Naturezas",
+                ocorrencias,
+                registros2017,
+                2017,
+                paletaCores[0],
+                ocorrencias,
+                registros2018,
+                2018,
+                paletaCores[1],
+                ocorrencias,
+                registros2019,
+                2019,
+                paletaCores[2]
         )
 
     # MÉTODO PARA MUDAR A COR DO GRÁFICO DE ACORDO COM O FILTRO SELECIONADO

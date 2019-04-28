@@ -124,3 +124,49 @@ class Graph():
         #RETORNA A PLOTAGEM DO GRÁFICO
         fig = go.Figure(data=data, layout=layout)
         return py.iplot(fig, filename='color-bar')
+
+    def plotHorizontalComparativeGraph(self,tituloGrafico, labelX, labelY, y1, x1, nam1, cor1, y2, x2, nam2, cor2, y3, x3, nam3, cor3):
+        trace1 = go.Bar(
+            y=y1,
+            x=x1,
+            name=nam1,
+            orientation = 'h',
+            marker = dict(
+                color = cor1,
+            )
+        )
+        trace2 = go.Bar(
+            y=y2,
+            x=x2,
+            name=nam2,
+            orientation = 'h',
+            marker = dict(
+                color = cor2,
+            )
+        )
+        trace3 = go.Bar(
+            y=y3,
+            x=x3,
+            name=nam3,
+            orientation = 'h',
+            marker = dict(
+                color = cor3,
+            )
+        )
+
+        data = [trace1, trace2, trace3]
+        layout = go.Layout(
+            title=tituloGrafico,
+                xaxis=dict(
+                    title=labelX
+                ),
+                yaxis=dict(
+                    title=labelY
+                ),
+                margin=dict(
+                    l=370
+                ),
+            barmode='stack'
+        )
+        fig = go.Figure(data=data, layout=layout)
+        return py.iplot(fig, filename='marker-h-bar')
