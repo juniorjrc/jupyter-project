@@ -205,3 +205,22 @@ class Ocorrencia():
         except Exception as e:
             print(str(e))
             return "Ocorrências não encontradas!!"
+
+    def getSomatorioUmaOcorrenciaPeriodo(self, id_cidade, id_natureza, id_tipo):
+        self.connect = c.Conexao()
+        self.query = self.connect.bd
+
+        try:
+            sql = "SELECT SUM(QTD_OCORRENCIAS) FROM TB_OCORRENCIA WHERE ID_CIDADE = %s AND ID_NATUREZA = %s AND ID_TIPO = %s"
+            self.query.execute(sql, (id_cidade, id_natureza, id_tipo))
+
+            umaOcorrenciaPeriodo = self.query.fetchone()
+
+            self.connect.conexao.commit()
+            self.connect.conexao.close()
+
+            
+            return umaOcorrenciaPeriodo[0]
+        
+        except:
+            return "Ocorrências não encontradas"

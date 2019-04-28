@@ -5,8 +5,10 @@ ocorrenciaDaoBean = odb.Ocorrencia()
 # CONTROLLERS
 from Controller import AnoController as ac
 from Controller import MesController as mc
+from Controller import NaturezaController as nc
 anoController = ac.AnoController()
 mesController = mc.MesController()
+naturezaController = nc.NaturezaController()
 
 # MODELS
 from Model import Ano as a
@@ -20,62 +22,107 @@ from Graphic import Graph as g
 grafico = g.Graph()
 
 class OcorrenciaController():
-
-    #ESTE MÉTODO RETORNA O GRÁFICO COMPARATIVO DE TODAS AS OCORRÊNCIAS DE ACORDO COM O PERÍODO EX.: OCORRENCIAS DO ANO 2017, 2018 E 2019
-    def consultaSomatorioTodasOcorrenciasPeriodo(self,id_cidade, id_tipo):
-        tipo = t.Tipo(id_tipo)
-        cor = self.verificaCor(id_tipo)
+    # ESTE METODO MOSTRA O O GRÁFICO EM PIZZA DA CIDADE DE CRUZEIRO, VISANDO DE UMA FORMA GERAL, TODO O CENÁRIO DE OCORRÊNCIAS
+    def exibeInformacoesCompletasOcorrencias(self, id_cidade, id_tipo):
         cidade = c.Cidade(id_cidade)
+        tipo = t.Tipo(id_tipo)
+        todasNaturezasProdutividade, todasNaturezasOcorrencias = naturezaController.getTodasNaturezas()
+
+        todosRegistrosProdutividade = []
+        todosRegistrosOcorrencias = []
+
+        if tipo.idTipo == 1:
+            #PERCORRE OS REGISTROS FILTRADOS POR PRODUTIVIDADE POLICIAL
+            for i in range(12):
+                naturezas = ocorrenciaDaoBean.getSomatorioUmaOcorrenciaPeriodo(cidade.idCidade, i + 1, tipo.idTipo)
+                todosRegistrosProdutividade.append(int(naturezas))
+            return grafico.plotPizzaGraph(
+            todasNaturezasProdutividade,
+            todosRegistrosProdutividade,
+            "Visão geral do cenário de registros de ocorrências filtradas por " + str(tipo.nomeTipo) + "."
+        )
+        
+        if tipo.idTipo == 2:
+            #PERCORRE OS REGISTROS FILTRADOS POR OCORRÊNCIAS REGISTRADAS
+            for i in range(23):
+                naturezas = ocorrenciaDaoBean.getSomatorioUmaOcorrenciaPeriodo(cidade.idCidade, i + 13, tipo.idTipo)
+                todosRegistrosOcorrencias.append(int(naturezas))
+            return grafico.plotPizzaGraph(
+            todasNaturezasOcorrencias,
+            todosRegistrosOcorrencias,
+            "Visão geral do cenário de registros de ocorrências filtradas por " + str(tipo.nomeTipo) + "."
+        )
+        
+    #ESTE MÉTODO RETORNA O GRÁFICO COMPARATIVO DE TODAS AS OCORRÊNCIAS DE ACORDO COM O PERÍODO EX.: OCORRENCIAS DO ANO 2017, 2018 E 2019
+    def consultaSomatorioTodasOcorrenciasPeriodo(self,id_cidade):
+        cidade = c.Cidade(id_cidade)
+        tipo1 = t.Tipo(1)
+        tipo2 = t.Tipo(2)
 
         todosAnos = anoController.getTodosAnos()
         somatorioOcorrencias = []
+        somatorioProdutividade = []
 
-        #PERCORRE O SOMATÓRIO DE TODAS OCORRENCIAS NO PERIODO QUE CONSTA NO BANCO
+        #PERCORRE O SOMATÓRIO DE TODAS OCORRENCIAS FILTRADAS POR PRODUTIVIDADE POLICIAL NO PERIODO QUE CONSTA NO BANCO
         for i in range(len(todosAnos)):
-            somatorioOcorrencias.append(int(ocorrenciaDaoBean.getSomatorioTodasOcorrenciasPorAno(i + 1, cidade.idCidade, tipo.idTipo)))
+            somatorioProdutividade.append(int(ocorrenciaDaoBean.getSomatorioTodasOcorrenciasPorAno(i + 1, cidade.idCidade, 1)))
+        
+        #PERCORRE O SOMATÓRIO DE TODAS AS OCORRENCIAS FILTRADAS POR OCORRENCIAS REGISTRADAS NO PERIODO QUE CONSTA NO BANCO NO BANCO
+        for i in range(len(todosAnos)):
+            somatorioOcorrencias.append(int(ocorrenciaDaoBean.getSomatorioTodasOcorrenciasPorAno(i + 1, cidade.idCidade, 2)))
 
         #PLOTA O GRÁFICO
-        grafico.plotGraph(
-            "Gráfico do número de ocorrências filtradas por " + str(tipo.nomeTipo) + "\nno período de 2017 a Fevereiro de 2019",
-            "Anos",
-            "Somatório dos registros",
-            todosAnos,
-            somatorioOcorrencias,
-            cor,
-            "bar",
-            "Images/consultaSomatorioTodasOcorrenciasPeriodo_" + str(tipo.nomeTipo) + ".png"
-            )
+        return grafico.plotComparativeGraph(
+            "Somatório de todos registros de ocorrências na cidade de Cruzeiro\nno período de 2017 à Fevereiro de 2019 para ambos os filtros",
+                "Anos",
+                todosAnos,
+                somatorioProdutividade,
+                str(tipo1.nomeTipo),
+                "Registros",
+                todosAnos,
+                somatorioOcorrencias,
+                str(tipo2.nomeTipo)
+        )
     
     #ESTE MÉTODO RETORNA O GRÁFICO COMPARATIVO DE TODAS OCORRÊNCIAS DURANTE UM MÊS ESPECÍFICO NO PERIODO DE 2017 A 2019
-    def consultaSomatorioTodasOcorrenciasMes(self, id_mes, id_cidade, id_tipo):
-        cor = self.verificaCor(id_tipo)
-
-        tipo = t.Tipo(id_tipo)
+    def consultaSomatorioTodasOcorrenciasMes(self, id_mes, id_cidade):
+        tipo1 = t.Tipo(1)
+        tipo2 = t.Tipo(2)
         mes = m.Mes(id_mes)
         cidade = c.Cidade(id_cidade)
 
         todosAnos = anoController.getTodosAnos()
-        ocorrenciasMes = []
+        ocorrenciasMesProdutividade = []
+        ocorrenciasMesOcorrencias = []
 
-        #PERCORRE O SOMATÓRIO DE TODAS OCORRÊNCIAS DURANTE UM DETERMINADO MÊS
+        #PERCORRE O SOMATÓRIO DE TODAS OCORRÊNCIAS FILTRADAS POR PRODUTIVIDADE DURANTE UM DETERMINADO MÊS
         for i in range(len(todosAnos)):
-            ocorrencias = ocorrenciaDaoBean.getSomatoriotOcorrenciasPorMes(mes.idMes, str(i + 1), cidade.idCidade, tipo.idTipo)
+            ocorrencias = ocorrenciaDaoBean.getSomatoriotOcorrenciasPorMes(mes.idMes, str(i + 1), cidade.idCidade, tipo1.idTipo)
             if ocorrencias != None:
-                ocorrenciasMes.append(int(ocorrencias))
+                ocorrenciasMesProdutividade.append(int(ocorrencias))
             else:
-                ocorrenciasMes.append(0)
-                
+                ocorrenciasMesProdutividade.append(0)
+        
+        #PERCORRE O SOMATÓRIO DE TODAS OCORRÊNCIAS FILTRADAS POR OCORRENCIAS REGISTRADAS DURANTE UM DETERMINADO MÊS
+        for i in range(len(todosAnos)):
+            ocorrencias = ocorrenciaDaoBean.getSomatoriotOcorrenciasPorMes(mes.idMes, str(i + 1), cidade.idCidade, tipo2.idTipo)
+            if ocorrencias != None:
+                ocorrenciasMesOcorrencias.append(int(ocorrencias))
+            else:
+                ocorrenciasMesOcorrencias.append(0)
         
         #PLOTA O GRÁFICO
-        grafico.plotGraph(
-            "Gŕafico do número de ocorrências filtradas por " + str(tipo.nomeTipo) + "\nno mês de " + str(mes.mes) + " no período de 2017 a Fevereiro de 2019",
-            "Anos",
-            "Somatório dos registros",
-            todosAnos,
-            ocorrenciasMes,
-            cor,
-            "bar",
-            "Images/consultaSomatorioTodasOcorrenciasMes_" + str(tipo.nomeTipo) + ".png"
+        return grafico.plotComparativeGraph(
+            "Gŕafico do número de ocorrências registradas na base da polícia no mês de " + str(mes.mes) + 
+            "\nno período de 2017 à Fevereiro de 2019 para ambos os filtros.",
+                "Anos",
+                todosAnos,
+                ocorrenciasMesProdutividade,
+                str(tipo1.nomeTipo),
+                "Registros",
+                todosAnos,
+                ocorrenciasMesOcorrencias,
+                str(tipo2.nomeTipo)
         )
 
     #ESTE METÓDO CONSULTA O SOMATÓRIO DE UMA DETERMINADA OCORRÊNCIA NO PERÍODO DE 2017 A 2019
@@ -98,15 +145,16 @@ class OcorrenciaController():
                 ocorrenciaAno.append(0)
         
         #PLOTA O GRÁFICO
-        grafico.plotGraph(
-            "Gŕafico do somatório dos registros de \n" + str(natureza.nomeNatureza) + " filtrada por " + str(tipo.nomeTipo) + "\nno período de 2017 a Fevereiro de 2019",
+        return grafico.plotNormalGraph(
+            "Gráfico do somatório dos registrs de " + str(natureza.nomeNatureza) + 
+            "\nfiltradas por " + str(tipo.nomeTipo) +
+                "\nno período de 2017 à Fevereiro de 2019",
                 "Anos",
-                "Somatório dos registros de \n" + str(natureza.nomeNatureza),
+                "Registros",
                 todosAnos,
                 ocorrenciaAno,
-                cor,
-                "bar",
-                "Images/consultaSomatorioUmaOcorrenciaPeriodo_" + str(tipo.nomeTipo) + ".png"
+                str(natureza.nomeNatureza),
+                cor
         )
 
     #ESTE MÉTODO MOSTRA OS REGISTROS DE UMA OCORRÊNCIA DURANTE TODOS OS MESES DE UM DETERMINADO ANO
@@ -129,16 +177,17 @@ class OcorrenciaController():
                 ocorrenciaMes.append(0)
 
         #PLOTA O GRÁFICO
-        grafico.plotGraph("Número de registros de casos de " + str(natureza.nomeNatureza) +
-         "\nno ano de " + str(ano.ano) + 
-             "\nna cidade de " + str(cidade.cidade),
-            "Meses",
-            "Registros",
-            todosMeses,
-            ocorrenciaMes,
-            cor,
-            "bar",
-            "Images/consultaOcorrenciaMesAno_" + str(tipo.nomeTipo) + ".png")
+        return grafico.plotNormalGraph(
+            "Número de registros de casos de " + str(natureza.nomeNatureza) +
+            "\nno ano de " + str(ano.ano) +
+                "\nna cidade de " + str(cidade.cidade),
+                "Meses",
+                "Registros",
+                todosMeses,
+                ocorrenciaMes,
+                str(natureza.nomeNatureza),
+                cor
+        )
     
     #ESTE MÉTODO MOSTRA O SOMATÓRIO DE TODAS OCORRÊNCIAS NO PERÍODO TODO
     def exibeSomatorioTodasOcorrenciasPeriodo(self, id_tipo):
@@ -161,7 +210,7 @@ class OcorrenciaController():
 
         ocorrencias = ocorrenciaDaoBean.getDetalheOcorrenciaPorMes(natureza.idNatureza, cidade.idCidade, mes.idMes, ano.idAno, tipo.idTipo)
 
-        print("Na cidade de " + str(cidade.cidade) + ", no mês de " + str(mes.mes) + " de " + str(ano.ano) + " obtiveram-se um total de " + str(ocorrencias[4]) + " registros de ocorrências filtradas por " + str(tipo.nomeTipo) + ".")
+        print("Na cidade de " + str(cidade.cidade) + ", no mês de " + str(mes.mes) + " de " + str(ano.ano) + " obtiveram-se um total de " + str(ocorrencias[4]) + " registros de ocorrências de " + str(natureza.nomeNatureza) + " filtradas por " + str(tipo.nomeTipo) + ".")
 
     def consultaDetalheTodasOcorrenciasMesAno(self, id_cidade, id_mes, id_ano, id_tipo):
         cor = self.verificaCor(id_tipo)
@@ -179,23 +228,23 @@ class OcorrenciaController():
             ocorrencias.append(detalhesOcorrencias[ocorrencia][0])
             registros.append(int(detalhesOcorrencias[ocorrencia][4]))
         
-        grafico.plotGraph("Registros de todas as ocorrências filtradas por " + str(tipo.nomeTipo) +
-        "\nno mês de " + str(mes.mes) + " de " + str(ano.ano),
-            "Nome da ocorrência",
-            "Registros",
-            ocorrencias,
-            registros,
-            cor,
-            "plot",
-            "Images/consultaDetalheTodasOcorrenciasMesAno_" + str(tipo.nomeTipo) + ".png")
+        return grafico.plotHorizontalGraph(
+            "Registros de todas as ocorrências filtradas por " + str(tipo.nomeTipo) +
+            "\nno mês de " + str(mes.mes) + " de " + str(ano.ano),
+                "Registros",
+                "Naturezas",
+                registros,
+                ocorrencias,
+                cor
+        )
 
     # MÉTODO PARA MUDAR A COR DO GRÁFICO DE ACORDO COM O FILTRO SELECIONADO
     def verificaCor(self, id_tipo):
         cor = ""
         # VERIFICA A COR DO GRÁFICO DE ACORDO COM O FILTRO
         if id_tipo == 1:
-            cor = "blue"
+            cor = 'rgba(38, 96, 220, 0.7)'
         if id_tipo == 2:
-            cor = "red"
+            cor = 'rgba(195, 55, 64, 0.7)'
         
         return cor
