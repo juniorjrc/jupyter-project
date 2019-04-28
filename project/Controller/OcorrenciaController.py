@@ -1,3 +1,15 @@
+#IGNORA OS WARNINGS ORIUNDOS DO JUPYTER
+import warnings
+warnings.filterwarnings('ignore')
+
+#IMPORTA A BIBLIOTECA IPython
+try:
+    from IPython.core.display import display, HTML
+except:
+    import subprocess
+    subprocess.call(["pip", "install", "IPython"])
+    from IPython.core.display import display, HTML
+
 # DAO
 from DAO import OcorrenciaDAOBean as odb
 ocorrenciaDaoBean = odb.Ocorrencia()
@@ -146,7 +158,7 @@ class OcorrenciaController():
         
         #PLOTA O GRÁFICO
         return grafico.plotNormalGraph(
-            "Gráfico do somatório dos registrs de <b>" + str(natureza.nomeNatureza) + 
+            "Gráfico do somatório dos registros de <b>" + str(natureza.nomeNatureza) + 
             "</b><br>filtradas por " + str(tipo.nomeTipo) +
                 "<br>no período de 2017 à Fevereiro de 2019",
                 "Anos",
@@ -196,9 +208,9 @@ class OcorrenciaController():
         ocorrenciasMes = round((somatorio/26), 2)
         ocorrenciasDia = round((somatorio/789), 2)
 
-        print("Na cidade de Cruzeiro, no período de 2017 a 2019 foram registradas um total de " + str(somatorio) + " ocorrências filtradas por " + str(tipo.nomeTipo) +
-        "\nConsiderando que esta análise esta baseada em dois anos e mais dois meses, a média do número de ocorrências por mês é de " + str(ocorrenciasMes) +
-            "\nPor fim a cidade de Cruzeiro, possui uma média de " + str(ocorrenciasDia) + " ocorrências filtradas por " + str(tipo.nomeTipo) + " por dia")
+        display(HTML("<i>Na cidade de Cruzeiro, no período de 2017 a 2019 foram registradas um total de <b>" + str(somatorio) + "</b> ocorrências filtradas por " + str(tipo.nomeTipo) +
+        "<br>Considerando que esta análise esta baseada em dois anos e mais dois meses, a média do número de ocorrências por mês é de <b>" + str(ocorrenciasMes) +
+        "</b><br>Por fim a cidade de Cruzeiro, possui uma média de <b>" + str(ocorrenciasDia) + "</b> ocorrências filtradas por " + str(tipo.nomeTipo) + " por dia</i>"))
     
     #ESTE METODO MOSTRA OS DETALHES DE UMA DETERMINADA OCORRÊNCIA EM UM DETERMINADO ANO
     def consultaDetalheOcorrenciaMesaAno(self, id_natureza, id_cidade, id_mes, id_ano, id_tipo):

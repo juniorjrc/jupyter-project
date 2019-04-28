@@ -10,7 +10,7 @@ except:
     import plotly.plotly as py
     import plotly.graph_objs as go
     import plotly.offline as pyo
-    plotly.tools.set_credentials_file(username='juniorjrc', api_key='tbDLwM4ek5BTeZdR8e1r')
+    plotly.tools.set_credentials_file(username='juniorjrcsccp', api_key='l7nnf1WZwE7AJ3kIXxP6')
     
 import matplotlib.pyplot as plt
 pyo.init_notebook_mode()
