@@ -51,7 +51,8 @@ class OcorrenciaController():
             return grafico.plotPizzaGraph(
             todasNaturezasProdutividade,
             todosRegistrosProdutividade,
-            "Visão geral do cenário de registros de ocorrências filtradas por <b>" + str(tipo.nomeTipo) + "</b>."
+            "Visão geral do cenário de registros de ocorrências filtradas por <b>" + str(tipo.nomeTipo) + "</b>.",
+            "exibeInformacoesCompletasOcorrencias_" + str(tipo.idTipo)
         )
         
         if tipo.idTipo == 2:
@@ -62,7 +63,8 @@ class OcorrenciaController():
             return grafico.plotPizzaGraph(
             todasNaturezasOcorrencias,
             todosRegistrosOcorrencias,
-            "Visão geral do cenário de registros de ocorrências filtradas por " + str(tipo.nomeTipo) + "."
+            "Visão geral do cenário de registros de ocorrências filtradas por " + str(tipo.nomeTipo) + ".",
+            "exibeInformacoesCompletasOcorrencias_" + str(tipo.idTipo)
         )
         
     #ESTE MÉTODO RETORNA O GRÁFICO COMPARATIVO DE TODAS AS OCORRÊNCIAS DE ACORDO COM O PERÍODO EX.: OCORRENCIAS DO ANO 2017, 2018 E 2019
@@ -93,7 +95,8 @@ class OcorrenciaController():
                 "Registros",
                 todosAnos,
                 somatorioOcorrencias,
-                str(tipo2.nomeTipo)
+                str(tipo2.nomeTipo),
+                "consultaSomatorioTodasOcorrenciasPeriodo"
         )
     
     #ESTE MÉTODO RETORNA O GRÁFICO COMPARATIVO DE TODAS OCORRÊNCIAS DURANTE UM MÊS ESPECÍFICO NO PERIODO DE 2017 A 2019
@@ -134,7 +137,8 @@ class OcorrenciaController():
                 "Registros",
                 todosAnos,
                 ocorrenciasMesOcorrencias,
-                str(tipo2.nomeTipo)
+                str(tipo2.nomeTipo),
+                "consultaSomatorioTodasOcorrenciasMes"
         )
 
     #ESTE METÓDO CONSULTA O SOMATÓRIO DE UMA DETERMINADA OCORRÊNCIA NO PERÍODO DE 2017 A 2019
@@ -166,7 +170,8 @@ class OcorrenciaController():
                 todosAnos,
                 ocorrenciaAno,
                 str(natureza.nomeNatureza),
-                cor
+                cor,
+                "consultaSomatorioUmaOcorrenciaPeriodo_" + str(tipo.idTipo)
         )
 
     #ESTE MÉTODO MOSTRA OS REGISTROS DE UMA OCORRÊNCIA DURANTE TODOS OS MESES DE UM DETERMINADO ANO
@@ -198,7 +203,8 @@ class OcorrenciaController():
                 todosMeses,
                 ocorrenciaMes,
                 str(natureza.nomeNatureza),
-                cor
+                cor,
+                "consultaOcorrenciaMesAno_" + str(tipo.idTipo)
         )
     
     #ESTE MÉTODO MOSTRA O SOMATÓRIO DE TODAS OCORRÊNCIAS NO PERÍODO TODO
@@ -248,7 +254,8 @@ class OcorrenciaController():
                 "Naturezas",
                 registros,
                 ocorrencias,
-                cor
+                cor,
+                "consultaDetalheTodasOcorrenciasMesAno" + str(tipo.idTipo)
         )
 
     #ESTE MÉTODO RETORNA O COMPARATIVO DE TODAS AS NATUREZAS DURANTE MÊS ESPECIFICADO EM TODO O PERÍODO
@@ -299,7 +306,8 @@ class OcorrenciaController():
                 ocorrencias,
                 registros2019,
                 2019,
-                paletaCores[2]
+                paletaCores[2],
+                "consultaRegistroFinal_" + str(tipo.idTipo)
         )
 
     # MÉTODO PARA MUDAR A COR DO GRÁFICO DE ACORDO COM O FILTRO SELECIONADO

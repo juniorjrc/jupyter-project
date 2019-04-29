@@ -15,7 +15,7 @@ except:
 import matplotlib.pyplot as plt
 pyo.init_notebook_mode()
 class Graph():    
-    def plotNormalGraph(self,tituloGrafico, labelX, labelY, eixoX1, eixoY1,name1, cor):
+    def plotNormalGraph(self,tituloGrafico, labelX, labelY, eixoX1, eixoY1,name1, cor, nomeArquivo):
         trace0 = go.Bar(
             x=eixoX1,
             y=eixoY1,
@@ -46,9 +46,9 @@ class Graph():
 
         #RETORNA A PLOTAGEM DO GRÁFICO
         fig = go.Figure(data=data, layout=layout)
-        return py.iplot(fig, filename='color-bar')
+        return py.iplot(fig, filename=nomeArquivo)
 
-    def plotComparativeGraph(self,tituloGrafico, labelX, eixoX1, eixoY1,name1, labelY, eixoX2, eixoY2, name2):
+    def plotComparativeGraph(self,tituloGrafico, labelX, eixoX1, eixoY1,name1, labelY, eixoX2, eixoY2, name2, nomeArquivo):
         #PRIMEIRA INFORMAÇÃO [PRODUTIVIDADE POLICIAL]
         trace0 = go.Bar(
             x=eixoX1,
@@ -90,14 +90,14 @@ class Graph():
 
         #RETORNA A PLOTAGEM DO GRÁFICO
         fig = go.Figure(data=data, layout=layout)
-        return py.iplot(fig, filename='color-bar')
+        return py.iplot(fig, filename=nomeArquivo)
 
-    def plotPizzaGraph(self, nomes, valores, titulo):
+    def plotPizzaGraph(self, nomes, valores, titulo, nomeArquivo):
         trace = go.Pie(labels=nomes, values=valores, title=titulo)
 
-        return py.iplot([trace], filename='basic_pie_chart')
+        return py.iplot([trace], filename=nomeArquivo)
 
-    def plotHorizontalGraph(self, tituloGrafico, labelX, labelY, eixoX, eixoY, cor):
+    def plotHorizontalGraph(self, tituloGrafico, labelX, labelY, eixoX, eixoY, cor, nomeArquivo):
         trace0 = go.Bar(
             x=eixoX,
             y=eixoY,
@@ -123,9 +123,9 @@ class Graph():
         )
         #RETORNA A PLOTAGEM DO GRÁFICO
         fig = go.Figure(data=data, layout=layout)
-        return py.iplot(fig, filename='color-bar')
+        return py.iplot(fig, filename=nomeArquivo)
 
-    def plotHorizontalComparativeGraph(self,tituloGrafico, labelX, labelY, y1, x1, nam1, cor1, y2, x2, nam2, cor2, y3, x3, nam3, cor3):
+    def plotHorizontalComparativeGraph(self,tituloGrafico, labelX, labelY, y1, x1, nam1, cor1, y2, x2, nam2, cor2, y3, x3, nam3, cor3, nomeArquivo):
         trace1 = go.Bar(
             y=y1,
             x=x1,
@@ -169,4 +169,4 @@ class Graph():
             barmode='stack'
         )
         fig = go.Figure(data=data, layout=layout)
-        return py.iplot(fig, filename='marker-h-bar')
+        return py.iplot(fig, filename=nomeArquivo)
