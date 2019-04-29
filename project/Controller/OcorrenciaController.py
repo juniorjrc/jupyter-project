@@ -85,7 +85,7 @@ class OcorrenciaController():
 
         #PLOTA O GRÁFICO
         return grafico.plotComparativeGraph(
-            "Somatório de todos registros de ocorrências na cidade de Cruzeiro<br>no período de 2017 à Fevereiro de 2019 para ambos os filtros",
+            "Somatório de todos registros de ocorrências na cidade de Cruzeiro<br>no período de 2017 à Março de 2019 para ambos os filtros",
                 "Anos",
                 todosAnos,
                 somatorioProdutividade,
@@ -126,7 +126,7 @@ class OcorrenciaController():
         #PLOTA O GRÁFICO
         return grafico.plotComparativeGraph(
             "Gŕafico do número de ocorrências registradas na base da polícia no mês de <b>" + str(mes.mes) + 
-            "</b><br>no período de 2017 à Fevereiro de 2019 para ambos os filtros.",
+            "</b><br>no período de 2017 à Março de 2019 para ambos os filtros.",
                 "Anos",
                 todosAnos,
                 ocorrenciasMesProdutividade,
@@ -160,7 +160,7 @@ class OcorrenciaController():
         return grafico.plotNormalGraph(
             "Gráfico do somatório dos registros de <b>" + str(natureza.nomeNatureza) + 
             "</b><br>filtradas por " + str(tipo.nomeTipo) +
-                "<br>no período de 2017 à Fevereiro de 2019",
+                "<br>no período de 2017 à Março de 2019",
                 "Anos",
                 "Registros",
                 todosAnos,
@@ -209,7 +209,7 @@ class OcorrenciaController():
         ocorrenciasDia = round((somatorio/789), 2)
 
         display(HTML("<i>Na cidade de Cruzeiro, no período de 2017 a 2019 foram registradas um total de <b>" + str(somatorio) + "</b> ocorrências filtradas por " + str(tipo.nomeTipo) +
-        "<br>Considerando que esta análise esta baseada em dois anos e mais dois meses, a média do número de ocorrências por mês é de <b>" + str(ocorrenciasMes) +
+        "<br>Considerando que esta análise esta baseada em dois anos e mais três meses, a média do número de ocorrências por mês é de <b>" + str(ocorrenciasMes) +
         "</b><br>Por fim a cidade de Cruzeiro, possui uma média de <b>" + str(ocorrenciasDia) + "</b> ocorrências filtradas por " + str(tipo.nomeTipo) + " por dia</i>"))
     
     #ESTE METODO MOSTRA OS DETALHES DE UMA DETERMINADA OCORRÊNCIA EM UM DETERMINADO ANO
